@@ -1,51 +1,48 @@
 <!doctype html>
 <html>
+   <head>
+      <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" >
+      <meta property="og:title" content="Adarsh Divakaran | Portfolio - REPL" />
+      <meta property="og:locale" content="en" />
+      <meta name="description" content="Python REPL themed portfolio website" />
+      <meta property="og:description" content="Python REPL themed portfolio website" />
 
-<head>
+      <link rel="canonical" href="https://adarshd.dev/" />
 
-  <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" >
+      <meta property="og:url" content="https://adarshd.dev/" />
+      <meta property="og:site_name" content="Adarsh Divakaran | Portfolio - REPL" />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary" />
+      <meta property="twitter:title" content="Adarsh Divakaran | Portfolio - REPL" />
+      <meta name="twitter:site" content="@adarshd905" />
 
-  <meta property="og:title" content="Adarsh Divakaran | Portfolio - REPL" />
-  <meta property="og:locale" content="en" />
-  <meta name="description" content="Python REPL themed portfolio website" />
-  <meta property="og:description" content="Python REPL themed portfolio website" />
-  <link rel="canonical" href="https://adarshd.dev/" />
-  <meta property="og:url" content="https://adarshd.dev/" />
-  <meta property="og:site_name" content="Adarsh Divakaran" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary" />
-  <meta property="twitter:title" content="Adarsh Divakaran | Portfolio - REPL" />
-  <meta name="twitter:site" content="@adarshd905" />
+      <title>Adarsh Divakaran | Portfolio - REPL</title>
 
-    <title>Adarsh Divakaran | Portfolio - REPL</title>
-    <link
-            rel="stylesheet"
-            href="https://pyscript.net/latest/pyscript.css"
-    />
-    <link rel="stylesheet" href="./xterm_custom.css"/>
+      <link
+         rel="stylesheet"
+         href="https://pyscript.net/latest/pyscript.css"
+         />
+      <link rel="stylesheet" href="./xterm_custom.css"/>
 
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"></script>
-  <script defer src="./xterm_logic.js"></script>
+      <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"></script>
+      <script defer src="./xterm_logic.js"></script>
 
-</head>
+   </head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L5M14YXVX4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5M14YXVX4"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'G-L5M14YXVX4');
-</script>
+      gtag('config', 'G-L5M14YXVX4');
+   </script>
 
-<body>
-<py-config src="./py-config.toml"></py-config>
-
-<div id="terminal" style="width:100%;height:100%"></div>
-
-<py-script src="./pyscript_code.py"></py-script>>
-
-</body>
+   <body>
+      <py-config src="./py-config.toml"></py-config>
+      <div id="terminal" style="width:100%;height:100%"></div>
+      <py-script src="./pyscript_code.py"></py-script>
+   </body>
 </html>
