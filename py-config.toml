@@ -1,0 +1,5 @@
+terminal = false
+
+[splashscreen]
+enabled = true
+autoclose = true
