@@ -32,11 +32,36 @@ function ensurePyscriptLoaded() {
             term.prompt();
             term.focus();
         });
+if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+// onKey event is not firing on android chromium based browser. This workaround is applied in that case.
+            term.on("data",function(data){
+            console.log('data');
+            console.log(data);
+            console.log(curr_line);
 
+        if (!data.replace(/\s/g, '').length && data != " ") {
+              console.log('assuming enter key');
+              console.log(curr_line);
+              if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) { // Check if string is all whitespace
+					entries.push(curr_line);
+					currPos = entries.length;
+                    // when enter is pressed, call the execute_command python function defined in pyscript with the current command
+					term.write('\n\r' + pyscript.interpreter.globals.get('execute_command')(curr_line));
+					term.write('\n\33[2K\r>>>  '); // \33[2K cleans the current line
+            }
+            curr_line = ""
+         }
+        else{
+            term.write(data);
+            curr_line = curr_line + data
+          }
+        });
+
+}
+else{
 		term.on("key", function(key, ev) {
 			const printable = !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey &&
 				!(ev.keyCode === 37 && term.buffer.cursorX < 6);
-
 			if (ev.keyCode === 13) { // Enter key
 				if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) { // Check if string is all whitespace
 					entries.push(curr_line);
@@ -104,3 +129,5 @@ function ensurePyscriptLoaded() {
 				}
 			}
 		});
+
+}
