@@ -13,7 +13,7 @@ var term = new Terminal({
     cursorBlink: true,
     cursorStyle: "bar",
     cols:(window.screen.width - (window.screen.width % 10)) / 10,
-    rows:(window.screen.height - (window.screen.height % 30)) / 30
+    rows:(window.screen.height - (window.screen.height % 25)) / 25
 });
 
 var curr_line = ''; // holds command being entered
