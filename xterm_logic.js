@@ -11,7 +11,9 @@ function ensurePyscriptLoaded() {
 }
 var term = new Terminal({
     cursorBlink: true,
-    cursorStyle: "bar"
+    cursorStyle: "bar",
+    cols:(window.screen.width - (window.screen.width % 10)) / 10,
+    rows:(window.screen.height - (window.screen.height % 30)) / 30
 });
 
 var curr_line = ''; // holds command being entered
@@ -27,8 +29,8 @@ term.prompt = () => {
 
 ensurePyscriptLoaded().then(function() {
     console.log("Pyscript Loaded");
-    term.write(pyscript.interpreter.globals.get("site_description_string"));
-    term.write(pyscript.interpreter.globals.get("version_string"));
+    term.write('\033[92m \033[1m' + pyscript.interpreter.globals.get("site_description_string"));
+    term.write('\033[0m' + pyscript.interpreter.globals.get("version_string"));
     term.prompt();
     term.focus();
 });
