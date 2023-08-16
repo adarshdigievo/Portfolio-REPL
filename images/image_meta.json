@@ -1,0 +1,22 @@
+{
+   "1":{
+      "caption":"With Guido van Rossum !",
+      "path":"with_guido.jpg"
+   },
+   "2":{
+      "caption":"Strollby (UST) Backend Team",
+      "path":"stby_backend.jpg"
+   },
+   "3":{
+      "caption":"With Sebastian Ramirez at Pyconf Hyderabad",
+      "path":"with_sebastian.jpg"
+   },
+   "4":{
+      "caption":"Strollby Team",
+      "path":"stby_team.jpg"
+   },
+   "5":{
+      "caption":"With Dan from RealPython at Pycascades 2023",
+      "path":"with_dan.jpg"
+   }
+}
