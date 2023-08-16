@@ -1,0 +1,7 @@
+terminal = false
+
+packages = ["ascii_magic"]
+
+[splashscreen]
+enabled = true
+autoclose = true
