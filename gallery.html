@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" >
+      <meta property="og:title" content="Gallery | Adarsh Divakaran | Portfolio - REPL" />
+      <meta property="og:locale" content="en" />
+      <meta name="description" content="Gallery | Python REPL themed portfolio website" />
+      <meta property="og:description" content="Python REPL themed portfolio website" />
+      <link rel="canonical" href="https://adarshd.dev/gallery.html" />
+      <meta property="og:url" content="https://adarshd.dev/gallery.html" />
+      <meta property="og:site_name" content="Image Gallery | Adarsh Divakaran | Portfolio - REPL" />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary" />
+      <meta property="twitter:title" content="Image Gallery | Adarsh Divakaran | Portfolio - REPL" />
+      <meta name="twitter:site" content="@adarshd905" />
+      <title>Photo Gallery | Adarsh Divakaran | Portfolio - REPL</title>
+      <link
+         rel="stylesheet"
+         href="https://pyscript.net/latest/pyscript.css"
+         />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.2.1/css/xterm.min.css"/>
+      <link rel="stylesheet" href="./styles/gallery.css"/>
+      <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+      <script defer src="https://cdn.jsdelivr.net/npm/xterm@5.2.1/lib/xterm.min.js"></script>
+      <script defer src="./scripts/js/xterm_gallery.js"></script>
+      <script
+         src="https://js.sentry-cdn.com/329228f340cb9497454847e7ade15766.min.js"
+         crossorigin="anonymous"
+         ></script>
+      <style>
+      </style>
+   </head>
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5M14YXVX4"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-L5M14YXVX4');
+   </script>
+   <body style="background-color: #000000">
+      <div class="header">
+         <p>ASCII Art Photo Gallery | Slideshow | Images change in approx 7 seconds</p>
+      </div>
+      <div class="title">
+         Loading images...
+      </div>
+      <py-config src="./configs/py-config_gallery.toml"></py-config>
+      <div id="terminal" style="width:100%;height:100%"></div>
+      <py-script src="./scripts/py/gallery.py"></py-script>
+   </body>
+</html>
