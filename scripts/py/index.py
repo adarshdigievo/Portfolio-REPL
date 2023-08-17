@@ -161,6 +161,23 @@ class ProfileFetchDescriptor:
                 return "WIP"
 
 
+class ProfileLinkDescriptor:
+    link_map = {
+        "blog": "https://blog.adarshd.dev",
+        "gallery": "https://adarshd.dev/gallery.html",
+        "source": "https://github.com/adarshdigievo/Portfolio-REPL/",
+    }
+
+    def __init__(self, target: str) -> None:
+        if (url := ProfileLinkDescriptor.link_map.get(target)) is None:
+            raise ValueError("undefined url")
+        self.url = url
+
+    def __get__(self, _, __) -> str:
+        webbrowser.open(url=self.url, new=2)
+        return "Opened in new tab.."
+
+
 async def main():
     await ProfileFetchDescriptor.load_profile_data()
 
@@ -173,12 +190,24 @@ async def main():
     # Dynamically generate a class named ProfileData. Each member attribute of the class is a descriptor
     ProfileData = type("ProfileData", (), attrs)
 
+    link_attrs = {
+        field.upper(): ProfileLinkDescriptor(field)
+        for field in ProfileLinkDescriptor.link_map
+    }
+    ProfileLinks = type("ProfileLinks", (), link_attrs)
+
+    VISIT = (
+        ProfileLinks()
+    )  # This class contains descriptor attributes which open corresponding webpages on access. Ex: VISIT.BLOG
+    interpreter.locals |= {"VISIT": VISIT}  # Load the class to interpreter locals
+
     global site_description_string  # making it global, so that it can be accessed from js, via pyodide interpreter globals
-    site_description_string = "Adarsh Divakaran | Portfolio REPL\n\n\r"
+    site_description_string = "\rAdarsh Divakaran | Portfolio REPL\n\n\r"
     site_description_string += (
-        f'Pre-loaded variables: {", ".join(profile_fields_list)}.\n\r'
+        f'Pre-loaded variables: {", ".join(profile_fields_list)}.\n\n\r'
     )
-    site_description_string += f"Try entering `print(ABOUT)` in the REPL\n\n\r"
+    # site_description_string += f"Try entering `print(ABOUT)` in the REPL\n\r"
+    site_description_string += f"External links: Enter VISIT.BLOG, VISIT.GALLERY or VISIT.SOURCE to open Blog, Ascii Photo Gallery or Source code\n\n\r"
 
     global version_string
     version_string = f"Python {sys.version}\n\r"

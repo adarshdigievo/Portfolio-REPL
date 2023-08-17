@@ -33,17 +33,16 @@ ensurePyscriptLoaded().then(function() {
     term.write('\033[0m' + pyscript.interpreter.globals.get("version_string"));
     term.prompt();
     term.focus();
+    var initial_prompt = 'print(ABOUT) # press enter'
+    curr_line = initial_prompt
+    term.write(initial_prompt)
 });
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     // onKey event is not firing on android chromium based browser. This workaround is applied in that case.
     term.on("data", function(data) {
-        console.log('data');
-        console.log(data);
-        console.log(curr_line);
 
         if (!data.replace(/\s/g, '').length && data != " ") {
             console.log('assuming enter key');
-            console.log(curr_line);
             if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) { // Check if string is all whitespace
                 entries.push(curr_line);
                 currPos = entries.length;
