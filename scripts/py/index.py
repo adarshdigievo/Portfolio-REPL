@@ -72,8 +72,31 @@ class ProfileFetchDescriptor:
     async def load_profile_data(cls) -> None:
         # Get profile data by calling gitconnected API and store it as a class attribute
         resp = await pyfetch("https://gitconnected.com/v1/portfolio/adarshdigievo")
+        profile_dict = await resp.json()
+
+        # Add latest xAI experience (prepend to work array)
+        xai_experience = {
+            "name": "xAI",
+            "position": "SWE Specialist (Human Data)",
+            "website": "https://x.ai/",
+            "startDate": "2024",
+            "endDate": "Present",
+            "summary": "Working on human data evaluation and quality assurance for AI systems at xAI, focusing on improving AI model performance through expert human feedback.",
+            "highlights": [
+                "Evaluating and improving AI model outputs",
+                "Providing expert human feedback for model training",
+                "Ensuring data quality and consistency"
+            ]
+        }
+
+        # Prepend xAI experience to work history
+        if "work" in profile_dict:
+            profile_dict["work"].insert(0, xai_experience)
+        else:
+            profile_dict["work"] = [xai_experience]
+
         cls.profile_data = ProfileDataRecord(
-            data_dict=await resp.json(), refreshed_timestamp=datetime.now().timestamp()
+            data_dict=profile_dict, refreshed_timestamp=datetime.now().timestamp()
         )
 
     def __init__(self, field: ProfileFields) -> None:

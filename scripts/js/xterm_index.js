@@ -1,19 +1,52 @@
 function ensurePyscriptLoaded() {
-
     return new Promise(waitForPyscript);
 
     function waitForPyscript(resolve, reject) {
-        if (pyscript && pyscript.interpreter && pyscript.interpreter.globals.get("version_string"))
+        if (window.pyscript && window.pyscript.interpreter && window.pyscript.interpreter.globals.get("version_string"))
             resolve();
         else
             setTimeout(waitForPyscript.bind(this, resolve, reject), 30);
     }
 }
+
+// Enhanced terminal configuration with better theme and fonts
 var term = new Terminal({
     cursorBlink: true,
     cursorStyle: "bar",
-    cols:(window.screen.width - (window.screen.width % 10)) / 10,
-    rows:(window.screen.height - (window.screen.height % 25)) / 25
+    cursorWidth: 2,
+    fontFamily: '"Cascadia Code", "Fira Code", "Menlo", "Monaco", "Courier New", monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    fontWeightBold: 700,
+    lineHeight: 1.2,
+    letterSpacing: 0,
+    theme: {
+        background: '#000000',
+        foreground: '#ffffff',
+        cursor: '#00ff00',
+        cursorAccent: '#000000',
+        selectionBackground: 'rgba(255, 255, 255, 0.3)',
+        black: '#000000',
+        red: '#e06c75',
+        green: '#98c379',
+        yellow: '#d19a66',
+        blue: '#61afef',
+        magenta: '#c678dd',
+        cyan: '#56b6c2',
+        white: '#abb2bf',
+        brightBlack: '#5c6370',
+        brightRed: '#e06c75',
+        brightGreen: '#98c379',
+        brightYellow: '#d19a66',
+        brightBlue: '#61afef',
+        brightMagenta: '#c678dd',
+        brightCyan: '#56b6c2',
+        brightWhite: '#ffffff'
+    },
+    allowTransparency: true,
+    scrollback: 1000,
+    tabStopWidth: 4,
+    convertEol: true
 });
 
 var curr_line = ''; // holds command being entered
@@ -21,16 +54,29 @@ var entries = []; // stores command history
 var currPos = 0; // current position in entries array
 var pos = 0; // tracks cursor position in curr_line
 
+// Initialize addons for enhanced terminal experience
+const fitAddon = new FitAddon.FitAddon();
+const webLinksAddon = new WebLinksAddon.WebLinksAddon();
+
+term.loadAddon(fitAddon);
+term.loadAddon(webLinksAddon);
+
 term.open(document.getElementById('terminal'));
+
+// Fit terminal to container and handle resize events
+fitAddon.fit();
+window.addEventListener('resize', () => {
+    fitAddon.fit();
+});
 
 term.prompt = () => {
     term.write('\n\r' + curr_line + '\r\n>>>  ');
 };
 
 ensurePyscriptLoaded().then(function() {
-    console.log("Pyscript Loaded");
-    term.write('\033[92m \033[1m' + pyscript.interpreter.globals.get("site_description_string"));
-    term.write('\033[0m' + pyscript.interpreter.globals.get("version_string"));
+    console.log("PyScript Loaded - Enhanced Terminal Experience");
+    term.write('\033[92m \033[1m' + window.pyscript.interpreter.globals.get("site_description_string"));
+    term.write('\033[0m' + window.pyscript.interpreter.globals.get("version_string"));
     term.prompt();
     term.focus();
     var initial_prompt = 'print(ABOUT) # press enter'
@@ -47,7 +93,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
                 entries.push(curr_line);
                 currPos = entries.length;
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + pyscript.interpreter.globals.get('execute_command')(curr_line));
+                term.write('\n\r' + window.pyscript.interpreter.globals.get('execute_command')(curr_line));
                 term.write('\n\33[2K\r>>>  '); // \33[2K cleans the current line
             }
             curr_line = ""
@@ -67,7 +113,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
                 currPos = entries.length;
 
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + pyscript.interpreter.globals.get('execute_command')(curr_line));
+                term.write('\n\r' + window.pyscript.interpreter.globals.get('execute_command')(curr_line));
                 term.write('\n\33[2K\r>>>  '); // \33[2K cleans the current line
 
             } else { // entry is whitespace only
