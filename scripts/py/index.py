@@ -27,10 +27,17 @@ def execute_command(command: str) -> str:
                     command = command.replace(
                         field, repr(getattr(ProfileData, field.lower()))
                     )
-            compiled_code = code.compile_command(
-                command
-            )  # If compile code is not used, variable repr are not printed
-            interpreter.runcode(compiled_code)
+            try:
+                compiled_code = code.compile_command(
+                    command
+                )  # If compile code is not used, variable repr are not printed
+            except (OverflowError, SyntaxError, ValueError):
+                interpreter.showsyntaxerror()
+            else:
+                if compiled_code is None:
+                    print("Incomplete command")
+                else:
+                    interpreter.runcode(compiled_code)
             output = buf1.getvalue()
 
         output = output or buf.getvalue()
