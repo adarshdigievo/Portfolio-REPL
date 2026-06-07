@@ -3,6 +3,7 @@ import sys
 import asyncio
 import webbrowser
 import code
+import traceback
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -52,9 +53,14 @@ def execute_command(command: str) -> str:
         with io.StringIO() as buf1, redirect_stdout(buf1):
             for field in profile_fields_list:
                 if field in command:
-                    command = command.replace(
-                        field, repr(getattr(ProfileData, field.lower()))
-                    )
+                    try:
+                        value = getattr(ProfileData, field.lower())
+                    except Exception:
+                        traceback.print_exc()
+                        output = buf1.getvalue()
+                        output = output or buf.getvalue()
+                        return "\n\r".join(output.split("\n"))
+                    command = command.replace(field, repr(value))
             try:
                 compiled_code = code.compile_command(
                     command
@@ -149,11 +155,22 @@ class ProfileFetchDescriptor:
             case ProfileFields.EXPERIENCE:
                 exp = ""
                 for exp_data in ProfileFetchDescriptor.profile_data.data_dict["work"]:
-                    exp += f"\n{'-' * 30}\n{exp_data['position']} at {exp_data['name']}  | {exp_data['startDate']} - {exp_data['endDate']} | {exp_data['website']} \n\n"
-                    exp += f"{exp_data['summary']} \n"
-                    if exp_data["highlights"]:
+                    position = exp_data.get("position", "Role")
+                    company = exp_data.get("name", "Company")
+                    start_date = exp_data.get("startDate", "")
+                    end_date = exp_data.get("endDate") or "Present"
+                    website = exp_data.get("website") or exp_data.get("url") or ""
+                    summary = exp_data.get("summary", "")
+                    highlights = exp_data.get("highlights") or []
+
+                    exp += f"\n{'-' * 30}\n{position} at {company}  | {start_date} - {end_date}"
+                    if website:
+                        exp += f" | {website}"
+                    exp += " \n\n"
+                    exp += f"{summary} \n"
+                    if highlights:
                         exp += "\n".join(
-                            f"- {highlight}" for highlight in exp_data["highlights"]
+                            f"- {highlight}" for highlight in highlights
                         )
                     exp += "\n\n"
                 return exp

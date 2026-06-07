@@ -22,9 +22,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@3.14.5/dist/xterm.css"/>
     <style>
         #terminal {
+            box-sizing: border-box;
+            height: calc(100dvh - 52px) !important;
             opacity: 0;
             padding-bottom: 52px;
             transition: opacity 160ms ease;
+            width: 100%;
         }
 
         #terminal.is-ready {

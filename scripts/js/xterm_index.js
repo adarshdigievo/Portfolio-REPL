@@ -1,3 +1,26 @@
+function getViewportWidth() {
+    return window.visualViewport ? window.visualViewport.width : window.innerWidth;
+}
+
+function getViewportHeight() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+}
+
+function getSuggestionHeight() {
+    var suggestions = document.querySelector('.command-suggestions');
+    return suggestions ? suggestions.getBoundingClientRect().height : 0;
+}
+
+function getTerminalCols() {
+    var width = Math.max(320, getViewportWidth());
+    return Math.max(32, Math.floor((width - 16) / 10));
+}
+
+function getTerminalRows() {
+    var availableHeight = Math.max(220, getViewportHeight() - getSuggestionHeight() - 12);
+    return Math.max(8, Math.floor(availableHeight / 24));
+}
+
 function ensurePyscriptLoaded() {
 
     return new Promise(waitForPyscript);
@@ -12,8 +35,8 @@ function ensurePyscriptLoaded() {
 var term = new Terminal({
     cursorBlink: true,
     cursorStyle: "bar",
-    cols:(window.screen.width - (window.screen.width % 10)) / 10,
-    rows:(window.screen.height - (window.screen.height % 25)) / 25
+    cols: getTerminalCols(),
+    rows: getTerminalRows()
 });
 
 var curr_line = ''; // holds command being entered
@@ -67,6 +90,12 @@ function showTerminal() {
     }
     if (terminal) {
         terminal.classList.add('is-ready');
+    }
+}
+
+function resizeTerminal() {
+    if (term && term.resize) {
+        term.resize(getTerminalCols(), getTerminalRows());
     }
 }
 
@@ -162,6 +191,13 @@ function submitCommand(command) {
 }
 
 term.open(document.getElementById('terminal'));
+resizeTerminal();
+
+window.addEventListener('resize', resizeTerminal);
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resizeTerminal);
+    window.visualViewport.addEventListener('scroll', resizeTerminal);
+}
 
 document.querySelectorAll('.command-suggestions button').forEach(function(button) {
     button.addEventListener('click', function() {
