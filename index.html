@@ -123,10 +123,10 @@
         .mobile-keyboard {
             background: var(--bar-bg);
             border: 1px solid var(--accent);
-            bottom: 8px;
+            bottom: 16px;
             box-sizing: border-box;
             display: none;
-            gap: 7px;
+            gap: 5px;
             left: 8px;
             padding: 8px;
             position: fixed;
@@ -136,7 +136,7 @@
 
         .mobile-keyboard__shortcuts {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -147,7 +147,7 @@
 
         .mobile-keyboard__row {
             display: grid;
-            gap: 5px;
+            gap: 3px;
             grid-template-columns: repeat(10, minmax(0, 1fr));
         }
 
@@ -156,7 +156,7 @@
         }
 
         .mobile-keyboard__row--lower-controls {
-            grid-auto-rows: minmax(34px, auto);
+            grid-auto-rows: minmax(38px, auto);
         }
 
         .mobile-keyboard__key {
@@ -170,7 +170,7 @@
             font-family: courier-new, courier, monospace;
             font-size: 13px;
             justify-content: center;
-            min-height: 34px;
+            min-height: 38px;
             padding: 0 6px;
             white-space: nowrap;
         }
@@ -318,7 +318,7 @@
 
         @media (max-width: 520px) {
             #terminal {
-                height: calc(100dvh - 332px) !important;
+                height: calc(100dvh - 372px) !important;
             }
 
             .command-suggestions {
@@ -330,7 +330,7 @@
             }
 
             .repl-assistant {
-                bottom: 320px;
+                bottom: 352px;
                 left: auto;
                 max-width: min(320px, calc(100vw - 24px));
                 right: 16px;
