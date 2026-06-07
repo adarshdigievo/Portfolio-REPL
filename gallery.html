@@ -20,9 +20,9 @@
       <link rel="stylesheet" href="./styles/gallery.css"/>
 
        <!-- PyScript CSS -->
-       <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css">
+       <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
        <!-- This script tag bootstraps PyScript -->
-       <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
+       <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
 
       <script defer src="https://cdn.jsdelivr.net/npm/xterm@5.2.1/lib/xterm.min.js"></script>
       <script defer src="./scripts/js/xterm_gallery.js"></script>
@@ -49,8 +49,7 @@
       <div class="title">
          Loading images...
       </div>
-      <py-config src="./configs/py-config_gallery.toml"></py-config>
       <div id="terminal" style="width:100%;height:100%"></div>
-      <py-script src="./scripts/py/gallery.py"></py-script>
+      <script type="py" config="./configs/py-config_gallery.toml" src="./scripts/py/gallery.py"></script>
    </body>
 </html>

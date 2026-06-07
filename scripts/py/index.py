@@ -7,12 +7,15 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pyodide.http import pyfetch
+from pyodide.ffi import create_proxy
+from pyscript import window
 
-version_string = None  # Version string variable is exported as a global variable. Value is assigned when the py-script main() is executed.
+version_string = None  # Version string variable is exported as a global variable. Value is assigned when the PyScript main() is executed.
 
 ProfileData = None  # Class with descriptor attributes, for loading profile data. Initialised from main()
 
 interpreter = code.InteractiveInterpreter()  # runs user commands
+execute_command_proxy = None
 
 
 def execute_command(command: str) -> str:
@@ -208,7 +211,7 @@ async def main():
     )  # This class contains descriptor attributes which open corresponding webpages on access. Ex: VISIT.BLOG
     interpreter.locals |= {"VISIT": VISIT}  # Load the class to interpreter locals
 
-    global site_description_string  # making it global, so that it can be accessed from js, via pyodide interpreter globals
+    global site_description_string
     site_description_string = "\rAdarsh Divakaran | Portfolio REPL\n\n\r"
     site_description_string += (
         f'Pre-loaded variables: {", ".join(profile_fields_list)}.\n\n\r'
@@ -221,6 +224,13 @@ async def main():
     version_string += (
         'Type "help", "copyright", "credits" or "license" for more information.\n\r'
     )
+
+    global execute_command_proxy
+    execute_command_proxy = create_proxy(execute_command)
+    window.portfolioReplExecuteCommand = execute_command_proxy
+    window.portfolioReplSiteDescription = site_description_string
+    window.portfolioReplVersion = version_string
+    window.portfolioReplReady = True
 
 
 asyncio.ensure_future(main())

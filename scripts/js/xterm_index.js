@@ -3,7 +3,7 @@ function ensurePyscriptLoaded() {
     return new Promise(waitForPyscript);
 
     function waitForPyscript(resolve, reject) {
-        if (pyscript && pyscript.interpreter && pyscript.interpreter.globals.get("version_string"))
+        if (window.portfolioReplReady && window.portfolioReplExecuteCommand)
             resolve();
         else
             setTimeout(waitForPyscript.bind(this, resolve, reject), 30);
@@ -73,8 +73,8 @@ term.prompt = () => {
 
 ensurePyscriptLoaded().then(function() {
     console.log("Pyscript Loaded");
-    term.write('\033[92m \033[1m' + pyscript.interpreter.globals.get("site_description_string"));
-    term.write('\033[0m' + pyscript.interpreter.globals.get("version_string"));
+    term.write('\033[92m \033[1m' + window.portfolioReplSiteDescription);
+    term.write('\033[0m' + window.portfolioReplVersion);
     term.prompt();
     term.focus();
     var initial_prompt = 'print(ABOUT) # press enter'
@@ -90,7 +90,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
             if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) { // Check if string is all whitespace
                 addHistoryEntry(curr_line);
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + pyscript.interpreter.globals.get('execute_command')(curr_line));
+                term.write('\n\r' + window.portfolioReplExecuteCommand(curr_line));
                 showPrompt();
             }
             curr_line = ""
@@ -109,7 +109,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
                 addHistoryEntry(curr_line);
 
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + pyscript.interpreter.globals.get('execute_command')(curr_line));
+                term.write('\n\r' + window.portfolioReplExecuteCommand(curr_line));
                 showPrompt();
 
             } else { // entry is whitespace only
