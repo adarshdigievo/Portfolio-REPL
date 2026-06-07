@@ -21,13 +21,31 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@3.14.5/dist/xterm.css"/>
     <style>
+        :root {
+            --page-bg: #000000;
+            --terminal-fg: #ffffff;
+            --accent: #2aa342;
+            --accent-strong: #8aff80;
+            --chip-bg: #071307;
+            --chip-hover: #123018;
+            --chip-fg: #d7ffd9;
+            --bar-bg: rgba(0, 0, 0, 0.94);
+        }
+
+        html,
+        body {
+            background-color: var(--page-bg);
+            margin: 0;
+            min-height: 100%;
+        }
+
         #terminal {
             box-sizing: border-box;
-            height: calc(100dvh - 52px) !important;
+            height: calc(100dvh - 84px) !important;
+            margin: 8px;
             opacity: 0;
-            padding-bottom: 52px;
             transition: opacity 160ms ease;
-            width: 100%;
+            width: calc(100% - 16px);
         }
 
         #terminal.is-ready {
@@ -36,8 +54,8 @@
 
         .boot-loader {
             align-items: center;
-            background: #000000;
-            color: #8aff80;
+            background: var(--page-bg);
+            color: var(--accent-strong);
             display: flex;
             font-family: courier-new, courier, monospace;
             inset: 0;
@@ -62,18 +80,18 @@
 
         .command-suggestions {
             align-items: center;
-            background: rgba(0, 0, 0, 0.94);
-            border-top: 1px solid #1f7a2d;
-            bottom: 0;
+            background: var(--bar-bg);
+            border: 1px solid var(--accent);
+            bottom: 8px;
             box-sizing: border-box;
             display: flex;
             gap: 8px;
-            left: 0;
+            left: 8px;
             min-height: 52px;
             overflow-x: auto;
             padding: 8px;
             position: fixed;
-            right: 0;
+            right: 8px;
             z-index: 5;
             scrollbar-width: none;
         }
@@ -83,10 +101,10 @@
         }
 
         .command-suggestions button {
-            background: #071307;
-            border: 1px solid #2aa342;
+            background: var(--chip-bg);
+            border: 1px solid var(--accent);
             border-radius: 4px;
-            color: #d7ffd9;
+            color: var(--chip-fg);
             cursor: pointer;
             flex: 0 0 auto;
             font-family: courier-new, courier, monospace;
@@ -98,8 +116,126 @@
 
         .command-suggestions button:hover,
         .command-suggestions button:focus-visible {
-            background: #123018;
+            background: var(--chip-hover);
             outline: none;
+        }
+
+        .xterm-viewport {
+            scrollbar-color: var(--accent) var(--page-bg);
+            scrollbar-width: thin;
+        }
+
+        .xterm-viewport::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .xterm-viewport::-webkit-scrollbar-track {
+            background: var(--page-bg);
+        }
+
+        .xterm-viewport::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 0;
+        }
+
+        .repl-assistant {
+            align-items: flex-start;
+            bottom: 76px;
+            display: flex;
+            gap: 8px;
+            max-width: min(390px, calc(100vw - 24px));
+            position: fixed;
+            right: 16px;
+            z-index: 6;
+        }
+
+        .repl-assistant.is-collapsed .repl-assistant__bubble {
+            display: none;
+        }
+
+        .repl-assistant__avatar {
+            align-items: center;
+            background: var(--chip-bg);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--accent-strong);
+            cursor: pointer;
+            display: flex;
+            flex: 0 0 auto;
+            font-family: courier-new, courier, monospace;
+            font-size: 12px;
+            height: 42px;
+            justify-content: center;
+            line-height: 1;
+            padding: 0;
+            width: 42px;
+        }
+
+        .repl-assistant__bubble {
+            background: var(--chip-bg);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--chip-fg);
+            font-family: courier-new, courier, monospace;
+            font-size: 12px;
+            line-height: 1.35;
+            padding: 8px;
+        }
+
+        .repl-assistant__actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 7px;
+        }
+
+        .repl-assistant__tip-row {
+            align-items: center;
+            display: flex;
+            gap: 6px;
+        }
+
+        .repl-assistant__actions button,
+        .repl-assistant__close,
+        .repl-assistant__nav {
+            background: transparent;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--chip-fg);
+            cursor: pointer;
+            font-family: courier-new, courier, monospace;
+            font-size: 12px;
+            min-height: 28px;
+            padding: 0 8px;
+        }
+
+        .repl-assistant__nav {
+            flex: 0 0 auto;
+            font-size: 16px;
+            min-height: 26px;
+            padding: 0;
+            width: 28px;
+        }
+
+        .repl-assistant__close {
+            float: right;
+            margin-left: 8px;
+            min-height: 22px;
+            padding: 0 6px;
+        }
+
+        @media (max-width: 520px) {
+            .repl-assistant {
+                bottom: 76px;
+                left: auto;
+                max-width: min(320px, calc(100vw - 24px));
+                right: 16px;
+            }
+
+            .repl-assistant__bubble {
+                max-height: 110px;
+                overflow: auto;
+            }
         }
     </style>
 
@@ -132,9 +268,23 @@
     gtag('config', 'G-L5M14YXVX4');
 </script>
 
-<body style="background-color: #000000">
+<body>
     <div id="boot-loader" class="boot-loader">Starting Python REPL<span class="boot-loader__cursor">_</span></div>
-    <div id="terminal" style="width:100%;height:100%"></div>
+    <div id="terminal"></div>
+    <div id="repl-assistant" class="repl-assistant">
+        <button type="button" class="repl-assistant__avatar" aria-label="Toggle REPL assistant">REPL<br>?</button>
+        <div class="repl-assistant__bubble">
+            <button type="button" class="repl-assistant__close" aria-label="Hide assistant">x</button>
+            <div class="repl-assistant__tip-row">
+                <button type="button" class="repl-assistant__nav" data-tip-direction="previous" aria-label="Previous suggestion">&lsaquo;</button>
+                <div class="repl-assistant__text">Try `help()`, use Tab to complete commands, or switch themes.</div>
+                <button type="button" class="repl-assistant__nav" data-tip-direction="next" aria-label="Next suggestion">&rsaquo;</button>
+            </div>
+            <div class="repl-assistant__actions">
+                <button type="button" class="repl-assistant__primary" data-command="help()">help()</button>
+            </div>
+        </div>
+    </div>
     <div class="command-suggestions" aria-label="Suggested commands">
         <button type="button" data-command="help()">help()</button>
         <button type="button" data-command="clear()">clear()</button>
@@ -142,6 +292,8 @@
         <button type="button" data-command="print(SKILLS)">print(SKILLS)</button>
         <button type="button" data-command="print(EXPERIENCE)">print(EXPERIENCE)</button>
         <button type="button" data-command="VISIT.GALLERY">VISIT.GALLERY</button>
+        <button type="button" data-command="theme(amber)">theme("amber")</button>
+        <button type="button" data-command="theme(light)">theme("light")</button>
     </div>
     <script type="py" config="./configs/py-config.toml" src="./scripts/py/index.py"></script>
 </body>

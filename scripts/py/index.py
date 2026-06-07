@@ -28,6 +28,7 @@ def repl_help() -> None:
                 "  Most normal Python REPL commands work here.",
                 "  help()                 Show this help text",
                 "  clear()                Clear the terminal",
+                '  theme("amber")         Switch theme: green, amber, cyan, light',
                 "  print(ABOUT)           About Adarsh",
                 "  print(SKILLS)          Skills and ratings",
                 "  print(EXPERIENCE)      Work experience",
