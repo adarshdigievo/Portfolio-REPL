@@ -120,6 +120,98 @@
             outline: none;
         }
 
+        .mobile-keyboard {
+            background: var(--bar-bg);
+            border: 1px solid var(--accent);
+            bottom: 8px;
+            box-sizing: border-box;
+            display: none;
+            gap: 7px;
+            left: 8px;
+            padding: 8px;
+            position: fixed;
+            right: 8px;
+            z-index: 7;
+        }
+
+        .mobile-keyboard__shortcuts {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .mobile-keyboard__shortcuts::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-keyboard__row {
+            display: grid;
+            gap: 5px;
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+        }
+
+        .mobile-keyboard__row--symbols {
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+        }
+
+        .mobile-keyboard__row--lower-controls {
+            grid-auto-rows: minmax(34px, auto);
+        }
+
+        .mobile-keyboard__key {
+            align-items: center;
+            background: var(--chip-bg);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            color: var(--chip-fg);
+            cursor: pointer;
+            display: flex;
+            font-family: courier-new, courier, monospace;
+            font-size: 13px;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 6px;
+            white-space: nowrap;
+        }
+
+        .mobile-keyboard__key--wide {
+            grid-column: span 2;
+        }
+
+        .mobile-keyboard__key--icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .mobile-keyboard__key--accent {
+            background: var(--accent);
+            border-color: var(--accent-strong);
+            color: var(--page-bg);
+            font-weight: 700;
+        }
+
+        .mobile-keyboard__key--enter {
+            grid-column: 10;
+            grid-row: 1 / span 2;
+        }
+
+        .mobile-keyboard__key--space {
+            grid-column: span 3;
+        }
+
+        .mobile-keyboard__key:hover,
+        .mobile-keyboard__key:focus-visible {
+            background: var(--chip-hover);
+            outline: none;
+        }
+
+        .mobile-keyboard__key--accent:hover,
+        .mobile-keyboard__key--accent:focus-visible {
+            background: var(--accent-strong);
+            color: var(--page-bg);
+        }
+
         .xterm-viewport {
             scrollbar-color: var(--accent) var(--page-bg);
             scrollbar-width: thin;
@@ -225,8 +317,20 @@
         }
 
         @media (max-width: 520px) {
+            #terminal {
+                height: calc(100dvh - 332px) !important;
+            }
+
+            .command-suggestions {
+                display: none;
+            }
+
+            .mobile-keyboard {
+                display: grid;
+            }
+
             .repl-assistant {
-                bottom: 76px;
+                bottom: 320px;
                 left: auto;
                 max-width: min(320px, calc(100vw - 24px));
                 right: 16px;
@@ -294,6 +398,81 @@
         <button type="button" data-command="VISIT.GALLERY">VISIT.GALLERY</button>
         <button type="button" data-command="theme(amber)">theme("amber")</button>
         <button type="button" data-command="theme(light)">theme("light")</button>
+    </div>
+    <div class="mobile-keyboard" aria-label="Mobile Python keyboard">
+        <div class="mobile-keyboard__shortcuts">
+            <button type="button" class="mobile-keyboard__key" data-command="help()">help()</button>
+            <button type="button" class="mobile-keyboard__key" data-command="print(ABOUT)">ABOUT</button>
+            <button type="button" class="mobile-keyboard__key" data-command="print(SKILLS)">SKILLS</button>
+            <button type="button" class="mobile-keyboard__key" data-command="print(EXPERIENCE)">EXPERIENCE</button>
+            <button type="button" class="mobile-keyboard__key" data-command="clear()">clear()</button>
+        </div>
+        <div class="mobile-keyboard__row mobile-keyboard__row--symbols">
+            <button type="button" class="mobile-keyboard__key" data-key="(">(</button>
+            <button type="button" class="mobile-keyboard__key" data-key=")">)</button>
+            <button type="button" class="mobile-keyboard__key" data-key="&quot;">"</button>
+            <button type="button" class="mobile-keyboard__key" data-key="'">'</button>
+            <button type="button" class="mobile-keyboard__key" data-key="_">_</button>
+            <button type="button" class="mobile-keyboard__key" data-key=".">.</button>
+            <button type="button" class="mobile-keyboard__key" data-key=",">,</button>
+            <button type="button" class="mobile-keyboard__key" data-key="=">=</button>
+            <button type="button" class="mobile-keyboard__key" data-key=":">:</button>
+            <button type="button" class="mobile-keyboard__key" data-key="#">#</button>
+        </div>
+        <div class="mobile-keyboard__row">
+            <button type="button" class="mobile-keyboard__key" data-key="1">1</button>
+            <button type="button" class="mobile-keyboard__key" data-key="2">2</button>
+            <button type="button" class="mobile-keyboard__key" data-key="3">3</button>
+            <button type="button" class="mobile-keyboard__key" data-key="4">4</button>
+            <button type="button" class="mobile-keyboard__key" data-key="5">5</button>
+            <button type="button" class="mobile-keyboard__key" data-key="6">6</button>
+            <button type="button" class="mobile-keyboard__key" data-key="7">7</button>
+            <button type="button" class="mobile-keyboard__key" data-key="8">8</button>
+            <button type="button" class="mobile-keyboard__key" data-key="9">9</button>
+            <button type="button" class="mobile-keyboard__key" data-key="0">0</button>
+        </div>
+        <div class="mobile-keyboard__row">
+            <button type="button" class="mobile-keyboard__key" data-key="q">q</button>
+            <button type="button" class="mobile-keyboard__key" data-key="w">w</button>
+            <button type="button" class="mobile-keyboard__key" data-key="e">e</button>
+            <button type="button" class="mobile-keyboard__key" data-key="r">r</button>
+            <button type="button" class="mobile-keyboard__key" data-key="t">t</button>
+            <button type="button" class="mobile-keyboard__key" data-key="y">y</button>
+            <button type="button" class="mobile-keyboard__key" data-key="u">u</button>
+            <button type="button" class="mobile-keyboard__key" data-key="i">i</button>
+            <button type="button" class="mobile-keyboard__key" data-key="o">o</button>
+            <button type="button" class="mobile-keyboard__key" data-key="p">p</button>
+        </div>
+        <div class="mobile-keyboard__row">
+            <button type="button" class="mobile-keyboard__key" data-key="a">a</button>
+            <button type="button" class="mobile-keyboard__key" data-key="s">s</button>
+            <button type="button" class="mobile-keyboard__key" data-key="d">d</button>
+            <button type="button" class="mobile-keyboard__key" data-key="f">f</button>
+            <button type="button" class="mobile-keyboard__key" data-key="g">g</button>
+            <button type="button" class="mobile-keyboard__key" data-key="h">h</button>
+            <button type="button" class="mobile-keyboard__key" data-key="j">j</button>
+            <button type="button" class="mobile-keyboard__key" data-key="k">k</button>
+            <button type="button" class="mobile-keyboard__key" data-key="l">l</button>
+            <button type="button" class="mobile-keyboard__key mobile-keyboard__key--icon mobile-keyboard__key--accent" data-action="backspace" aria-label="Delete">&#9003;</button>
+        </div>
+        <div class="mobile-keyboard__row mobile-keyboard__row--lower-controls">
+            <button type="button" class="mobile-keyboard__key mobile-keyboard__key--wide" data-action="shift">Shift</button>
+            <button type="button" class="mobile-keyboard__key" data-key="z">z</button>
+            <button type="button" class="mobile-keyboard__key" data-key="x">x</button>
+            <button type="button" class="mobile-keyboard__key" data-key="c">c</button>
+            <button type="button" class="mobile-keyboard__key" data-key="v">v</button>
+            <button type="button" class="mobile-keyboard__key" data-key="b">b</button>
+            <button type="button" class="mobile-keyboard__key" data-key="n">n</button>
+            <button type="button" class="mobile-keyboard__key" data-key="m">m</button>
+            <button type="button" class="mobile-keyboard__key mobile-keyboard__key--icon mobile-keyboard__key--accent mobile-keyboard__key--enter" data-action="enter" aria-label="Enter">&#9166;</button>
+            <button type="button" class="mobile-keyboard__key" data-action="left">&lsaquo;</button>
+            <button type="button" class="mobile-keyboard__key" data-action="right">&rsaquo;</button>
+            <button type="button" class="mobile-keyboard__key" data-action="tab">Tab</button>
+            <button type="button" class="mobile-keyboard__key mobile-keyboard__key--space" data-action="space">Space</button>
+            <button type="button" class="mobile-keyboard__key" data-key="/">/</button>
+            <button type="button" class="mobile-keyboard__key" data-key="-">-</button>
+            <button type="button" class="mobile-keyboard__key" data-key="+">+</button>
+        </div>
     </div>
     <script type="py" config="./configs/py-config.toml" src="./scripts/py/index.py"></script>
 </body>

@@ -138,6 +138,7 @@ var themes = {
 };
 var activeThemeName = 'green';
 var assistantTipIndex = 0;
+var customKeyboardShift = false;
 var assistantTips = [
     {
         text: 'Start with the guided command list.',
@@ -224,10 +225,48 @@ function resizeTerminal() {
     if (term && term.resize) {
         term.resize(getTerminalCols(), getTerminalRows());
     }
+    syncMobileKeyboardMode();
 }
 
 function focusTerminal() {
+    if (shouldUseCustomKeyboard()) {
+        blurNativeTerminalInput();
+        return;
+    }
     term.focus();
+}
+
+function shouldUseCustomKeyboard() {
+    return getViewportWidth() <= 520 ||
+        new URLSearchParams(window.location.search).has('mobile-keyboard-test');
+}
+
+function blurNativeTerminalInput() {
+    var input = document.querySelector('.xterm-helper-textarea');
+    if (input) {
+        input.setAttribute('readonly', 'readonly');
+        input.setAttribute('inputmode', 'none');
+        if (document.activeElement === input) {
+            input.blur();
+        }
+    }
+}
+
+function syncMobileKeyboardMode() {
+    var input = document.querySelector('.xterm-helper-textarea');
+    if (!input) {
+        return;
+    }
+    if (shouldUseCustomKeyboard()) {
+        input.setAttribute('readonly', 'readonly');
+        input.setAttribute('inputmode', 'none');
+        if (document.activeElement === input) {
+            input.blur();
+        }
+    } else {
+        input.removeAttribute('readonly');
+        input.removeAttribute('inputmode');
+    }
 }
 
 function updateAssistantTip() {
@@ -409,9 +448,51 @@ function submitCommand(command) {
     }
 }
 
+function updateCustomKeyboardShift() {
+    document.querySelectorAll('.mobile-keyboard [data-key]').forEach(function(button) {
+        var key = button.getAttribute('data-key');
+        if (/^[a-z]$/.test(key)) {
+            button.textContent = customKeyboardShift ? key.toUpperCase() : key;
+        }
+    });
+    document.querySelectorAll('.mobile-keyboard [data-action="shift"]').forEach(function(button) {
+        button.setAttribute('aria-pressed', customKeyboardShift ? 'true' : 'false');
+    });
+}
+
+function insertCustomKeyboardKey(key) {
+    var input = /^[a-z]$/.test(key) && customKeyboardShift ? key.toUpperCase() : key;
+    insertInput(input, getCursorIndex());
+    if (customKeyboardShift && /^[a-z]$/.test(key)) {
+        customKeyboardShift = false;
+        updateCustomKeyboardShift();
+    }
+}
+
+function runCustomKeyboardAction(action) {
+    if (action === 'backspace') {
+        deleteInputBeforeCursor(getCursorIndex());
+    } else if (action === 'enter') {
+        submitCurrentLine();
+    } else if (action === 'space') {
+        insertInput(' ', getCursorIndex());
+    } else if (action === 'tab') {
+        completeCurrentInput();
+    } else if (action === 'left') {
+        renderInput(Math.max(0, getCursorIndex() - 1));
+    } else if (action === 'right') {
+        renderInput(Math.min(curr_line.length, getCursorIndex() + 1));
+    } else if (action === 'shift') {
+        customKeyboardShift = !customKeyboardShift;
+        updateCustomKeyboardShift();
+    }
+    blurNativeTerminalInput();
+}
+
 term.open(document.getElementById('terminal'));
 resizeTerminal();
 applyTheme(activeThemeName);
+syncMobileKeyboardMode();
 
 window.addEventListener('resize', resizeTerminal);
 if (window.visualViewport) {
@@ -432,6 +513,28 @@ document.querySelectorAll('.repl-assistant [data-command]').forEach(function(but
         focusTerminal();
     });
 });
+
+document.querySelectorAll('.mobile-keyboard [data-command]').forEach(function(button) {
+    button.addEventListener('click', function() {
+        submitCommand(button.getAttribute('data-command'));
+        blurNativeTerminalInput();
+    });
+});
+
+document.querySelectorAll('.mobile-keyboard [data-key]').forEach(function(button) {
+    button.addEventListener('click', function() {
+        insertCustomKeyboardKey(button.getAttribute('data-key'));
+        blurNativeTerminalInput();
+    });
+});
+
+document.querySelectorAll('.mobile-keyboard [data-action]').forEach(function(button) {
+    button.addEventListener('click', function() {
+        runCustomKeyboardAction(button.getAttribute('data-action'));
+    });
+});
+
+updateCustomKeyboardShift();
 
 var assistant = document.getElementById('repl-assistant');
 if (assistant) {
@@ -465,13 +568,15 @@ ensurePyscriptLoaded().then(function() {
     term.write('\033[92m \033[1m' + window.portfolioReplSiteDescription);
     term.write('\033[0m' + window.portfolioReplVersion);
     term.prompt();
-    term.focus();
+    focusTerminal();
     var initial_prompt = 'print(ABOUT) # press enter'
     curr_line = initial_prompt
     term.write(initial_prompt)
+    syncMobileKeyboardMode();
 });
 var useMobileInputHandler = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
-    new URLSearchParams(window.location.search).has('mobile-input-test');
+    new URLSearchParams(window.location.search).has('mobile-input-test') ||
+    shouldUseCustomKeyboard();
 
 if (useMobileInputHandler) {
     // onKey event is not firing on android chromium based browser. This workaround is applied in that case.
