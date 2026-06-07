@@ -20,6 +20,85 @@
     <title>Adarsh Divakaran | Portfolio - REPL</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@3.14.5/dist/xterm.css"/>
+    <style>
+        #terminal {
+            opacity: 0;
+            padding-bottom: 52px;
+            transition: opacity 160ms ease;
+        }
+
+        #terminal.is-ready {
+            opacity: 1;
+        }
+
+        .boot-loader {
+            align-items: center;
+            background: #000000;
+            color: #8aff80;
+            display: flex;
+            font-family: courier-new, courier, monospace;
+            inset: 0;
+            justify-content: center;
+            position: fixed;
+            z-index: 10;
+        }
+
+        .boot-loader.is-hidden {
+            display: none;
+        }
+
+        .boot-loader__cursor {
+            animation: blink 1s steps(2, start) infinite;
+        }
+
+        @keyframes blink {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        .command-suggestions {
+            align-items: center;
+            background: rgba(0, 0, 0, 0.94);
+            border-top: 1px solid #1f7a2d;
+            bottom: 0;
+            box-sizing: border-box;
+            display: flex;
+            gap: 8px;
+            left: 0;
+            min-height: 52px;
+            overflow-x: auto;
+            padding: 8px;
+            position: fixed;
+            right: 0;
+            z-index: 5;
+            scrollbar-width: none;
+        }
+
+        .command-suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .command-suggestions button {
+            background: #071307;
+            border: 1px solid #2aa342;
+            border-radius: 4px;
+            color: #d7ffd9;
+            cursor: pointer;
+            flex: 0 0 auto;
+            font-family: courier-new, courier, monospace;
+            font-size: 13px;
+            min-height: 34px;
+            padding: 0 10px;
+            white-space: nowrap;
+        }
+
+        .command-suggestions button:hover,
+        .command-suggestions button:focus-visible {
+            background: #123018;
+            outline: none;
+        }
+    </style>
 
     <!-- PyScript CSS -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
@@ -51,7 +130,16 @@
 </script>
 
 <body style="background-color: #000000">
+    <div id="boot-loader" class="boot-loader">Starting Python REPL<span class="boot-loader__cursor">_</span></div>
     <div id="terminal" style="width:100%;height:100%"></div>
+    <div class="command-suggestions" aria-label="Suggested commands">
+        <button type="button" data-command="help()">help()</button>
+        <button type="button" data-command="clear()">clear()</button>
+        <button type="button" data-command="print(ABOUT)">print(ABOUT)</button>
+        <button type="button" data-command="print(SKILLS)">print(SKILLS)</button>
+        <button type="button" data-command="print(EXPERIENCE)">print(EXPERIENCE)</button>
+        <button type="button" data-command="VISIT.GALLERY">VISIT.GALLERY</button>
+    </div>
     <script type="py" config="./configs/py-config.toml" src="./scripts/py/index.py"></script>
 </body>
 </html>

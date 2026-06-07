@@ -18,6 +18,42 @@
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.2.1/css/xterm.min.css"/>
 
       <link rel="stylesheet" href="./styles/gallery.css"/>
+      <style>
+         #terminal {
+            opacity: 0;
+            transition: opacity 160ms ease;
+         }
+
+         #terminal.is-ready {
+            opacity: 1;
+         }
+
+         .boot-loader {
+            align-items: center;
+            background: #000000;
+            color: #8aff80;
+            display: flex;
+            font-family: courier-new, courier, monospace;
+            inset: 0;
+            justify-content: center;
+            position: fixed;
+            z-index: 10;
+         }
+
+         .boot-loader.is-hidden {
+            display: none;
+         }
+
+         .boot-loader__cursor {
+            animation: blink 1s steps(2, start) infinite;
+         }
+
+         @keyframes blink {
+            to {
+               visibility: hidden;
+            }
+         }
+      </style>
 
        <!-- PyScript CSS -->
        <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
@@ -43,6 +79,7 @@
       gtag('config', 'G-L5M14YXVX4');
    </script>
    <body style="background-color: #000000">
+      <div id="boot-loader" class="boot-loader">Loading ASCII gallery<span class="boot-loader__cursor">_</span></div>
       <div class="header">
          <p>ASCII Art Photo Gallery | Slideshow | Images change in approx 7 seconds</p>
       </div>

@@ -11,6 +11,7 @@ async def main():
     base_path = window.location.protocol + "//" + window.location.host + "/images/"
     images_data = await pyfetch(base_path + "image_meta.json")
     images_data = await images_data.json()
+    first_image_rendered = False
     for image in cycle(list(images_data.values())):
         resp = await pyfetch(base_path + image["path"])
         pil_img = Image.open(BytesIO(await resp.bytes()))
@@ -22,6 +23,10 @@ async def main():
         document.querySelector(
             ".title"
         ).innerHTML = f"{image['caption']} | View original image by clicking <a href={base_path+ image['path']} target='_blank'>here</a>"
+        if not first_image_rendered:
+            document.getElementById("boot-loader").classList.add("is-hidden")
+            document.getElementById("terminal").classList.add("is-ready")
+            first_image_rendered = True
         await asyncio.sleep(7)
 
 

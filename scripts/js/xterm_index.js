@@ -21,6 +21,26 @@ var entries = []; // stores command history
 var currPos = 0; // current position in command history; entries.length means a blank new prompt
 var prompt_text = '>>>  ';
 var prompt_width = prompt_text.length;
+var command_completions = [
+    'help()',
+    'clear()',
+    'print(ABOUT)',
+    'print(SKILLS)',
+    'print(EXPERIENCE)',
+    'print(OPEN_SOURCE_CONTRIBUTIONS)',
+    'print(EDUCATION)',
+    'print(CERTIFICATIONS)',
+    'ABOUT',
+    'SKILLS',
+    'EXPERIENCE',
+    'CONFERENCE_TALKS',
+    'OPEN_SOURCE_CONTRIBUTIONS',
+    'EDUCATION',
+    'CERTIFICATIONS',
+    'VISIT.BLOG',
+    'VISIT.GALLERY',
+    'VISIT.SOURCE'
+];
 
 function getCursorIndex() {
     return Math.max(0, Math.min(curr_line.length, term.buffer.cursorX - prompt_width));
@@ -37,6 +57,21 @@ function renderInput(cursorIndex) {
 
 function showPrompt() {
     term.write('\n\33[2K\r' + prompt_text);
+}
+
+function showTerminal() {
+    var loader = document.getElementById('boot-loader');
+    var terminal = document.getElementById('terminal');
+    if (loader) {
+        loader.classList.add('is-hidden');
+    }
+    if (terminal) {
+        terminal.classList.add('is-ready');
+    }
+}
+
+function focusTerminal() {
+    term.focus();
 }
 
 function addHistoryEntry(command) {
@@ -65,7 +100,75 @@ function showNextHistoryEntry() {
     renderInput(curr_line.length);
 }
 
+function runCommand(command) {
+    var normalizedCommand = command.replace(/^\s+|\s+$/g, '');
+    if (normalizedCommand === 'clear' || normalizedCommand === 'clear()') {
+        term.write('\033[2J\033[3J\033[H' + prompt_text);
+        return;
+    }
+    term.write('\n\r' + window.portfolioReplExecuteCommand(command));
+    showPrompt();
+}
+
+function getCompletionToken(cursorIndex) {
+    var beforeCursor = curr_line.slice(0, cursorIndex);
+    var match = beforeCursor.match(/[A-Za-z_().]+$/);
+    if (!match) {
+        return null;
+    }
+    return {
+        value: match[0],
+        start: cursorIndex - match[0].length
+    };
+}
+
+function showCompletionOptions(matches, cursorIndex) {
+    term.write('\n\r' + matches.join('    '));
+    term.write('\n\r' + prompt_text + curr_line);
+    var charsToMoveLeft = curr_line.length - cursorIndex;
+    if (charsToMoveLeft > 0) {
+        term.write('\033[' + charsToMoveLeft.toString() + 'D');
+    }
+}
+
+function completeCurrentInput() {
+    var cursorIndex = getCursorIndex();
+    var token = getCompletionToken(cursorIndex);
+    if (!token || token.value.length === 0) {
+        showCompletionOptions(command_completions, cursorIndex);
+        return;
+    }
+
+    var matches = command_completions.filter(function(completion) {
+        return completion.indexOf(token.value) === 0;
+    });
+
+    if (matches.length === 1) {
+        curr_line = curr_line.slice(0, token.start) + matches[0] + curr_line.slice(cursorIndex);
+        renderInput(token.start + matches[0].length);
+    } else if (matches.length > 1) {
+        showCompletionOptions(matches, cursorIndex);
+    }
+}
+
+function submitCommand(command) {
+    curr_line = command;
+    renderInput(curr_line.length);
+    if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) {
+        addHistoryEntry(curr_line);
+        runCommand(curr_line);
+        curr_line = '';
+    }
+}
+
 term.open(document.getElementById('terminal'));
+
+document.querySelectorAll('.command-suggestions button').forEach(function(button) {
+    button.addEventListener('click', function() {
+        submitCommand(button.getAttribute('data-command'));
+        focusTerminal();
+    });
+});
 
 term.prompt = () => {
     term.write('\n\r' + curr_line + '\r\n' + prompt_text);
@@ -73,6 +176,7 @@ term.prompt = () => {
 
 ensurePyscriptLoaded().then(function() {
     console.log("Pyscript Loaded");
+    showTerminal();
     term.write('\033[92m \033[1m' + window.portfolioReplSiteDescription);
     term.write('\033[0m' + window.portfolioReplVersion);
     term.prompt();
@@ -90,8 +194,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
             if (curr_line.replace(/^\s+|\s+$/g, '').length != 0) { // Check if string is all whitespace
                 addHistoryEntry(curr_line);
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + window.portfolioReplExecuteCommand(curr_line));
-                showPrompt();
+                runCommand(curr_line);
             }
             curr_line = ""
         } else {
@@ -109,8 +212,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
                 addHistoryEntry(curr_line);
 
                 // when enter is pressed, call the execute_command python function defined in pyscript with the current command
-                term.write('\n\r' + window.portfolioReplExecuteCommand(curr_line));
-                showPrompt();
+                runCommand(curr_line);
 
             } else { // entry is whitespace only
                 showPrompt();
@@ -126,6 +228,11 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
             showPreviousHistoryEntry();
         } else if (ev.keyCode === 40) { // Down arrow
             showNextHistoryEntry();
+        } else if (ev.keyCode === 9) { // Tab
+            if (ev.preventDefault) {
+                ev.preventDefault();
+            }
+            completeCurrentInput();
         }
         // For other printable keys (non-control, non-arrow keys), If the cursor is not at the end of the line the pressed key is inserted into the curr_line at the appropriate cursor position.
         else if (printable && !(ev.keyCode === 39 && term.buffer.cursorX >= curr_line.length + prompt_width)) {

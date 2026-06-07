@@ -18,6 +18,31 @@ interpreter = code.InteractiveInterpreter()  # runs user commands
 execute_command_proxy = None
 
 
+def repl_help() -> None:
+    print(
+        "\n".join(
+            [
+                "Portfolio REPL commands:",
+                "  This site runs on PyScript.",
+                "  Most normal Python REPL commands work here.",
+                "  help()                 Show this help text",
+                "  clear()                Clear the terminal",
+                "  print(ABOUT)           About Adarsh",
+                "  print(SKILLS)          Skills and ratings",
+                "  print(EXPERIENCE)      Work experience",
+                "  print(OPEN_SOURCE_CONTRIBUTIONS)",
+                "  print(EDUCATION)",
+                "  print(CERTIFICATIONS)",
+                "  VISIT.BLOG             Open the blog",
+                "  VISIT.GALLERY          Open the ASCII photo gallery",
+                "  VISIT.SOURCE           Open the source code",
+                "",
+                "Use Up/Down for history and Left/Right to edit the current line.",
+            ]
+        )
+    )
+
+
 def execute_command(command: str) -> str:
     import io
     from contextlib import redirect_stdout, redirect_stderr
@@ -209,10 +234,17 @@ async def main():
     VISIT = (
         ProfileLinks()
     )  # This class contains descriptor attributes which open corresponding webpages on access. Ex: VISIT.BLOG
-    interpreter.locals |= {"VISIT": VISIT}  # Load the class to interpreter locals
+    interpreter.locals |= {
+        "VISIT": VISIT,
+        "help": repl_help,
+    }  # Load portfolio helpers to interpreter locals
 
     global site_description_string
     site_description_string = "\rAdarsh Divakaran | Portfolio REPL\n\n\r"
+    site_description_string += (
+        "Powered by PyScript: a real Python REPL in your browser.\n\r"
+        "Most normal Python REPL commands work here.\n\n\r"
+    )
     site_description_string += (
         f'Pre-loaded variables: {", ".join(profile_fields_list)}.\n\n\r'
     )
