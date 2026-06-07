@@ -18,5 +18,13 @@
    "5":{
       "caption":"With Dan from RealPython at Pycascades 2023",
       "path":"with_dan.jpg"
+   },
+   "6":{
+      "caption":"My Book - Deep Dive Python",
+      "path":"deep_dive_python_book.jpg"
+   },
+   "7":{
+      "caption":"With SerpApi team @ Pycon US 2026 - Long Beach",
+      "path":"serpapi_team_pyconus_26.jpg"
    }
 }
